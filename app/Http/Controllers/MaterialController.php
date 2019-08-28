@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class MaterialController extends Controller
 {
     public static function getMaterialClass($classId) {
-        return Material::where('class_id', $classId)->get();
+        return Material::where('class_id', $classId)->orderBy('updated_at')->get();
     }
     public function store($classId, Request $req) {
         $validateData = $this->validate($req, [

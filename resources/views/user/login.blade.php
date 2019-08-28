@@ -21,6 +21,7 @@
                         </div>
                     @endforeach
                 @endif
+                <input type="hidden" name="reto" value="{{ $reto }}">
                 <div>E-mail :</div>
                 <input type="email" class="box" name="email" required>
                 <div class="mt-3">Password :</div>

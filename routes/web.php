@@ -24,6 +24,7 @@ Route::get('/sukses-register', 'UserController@registerSuccess')->name('user.reg
 
 Route::get('/dashboard', 'UserController@dashboardPage')->name('user.dashboard')->middleware('User');
 Route::get('/kelas-saya', 'UserController@listKelas')->name('user.listKelas');
+Route::get('/cari', 'UserController@cariKelas')->name('user.cariKelas');
 
 Route::group(['prefix' => 'pengajar'], function() {
     Route::get('/dasbor', 'UserController@dashboard')->name('pengajar.dashboard')->middleware('User');
@@ -43,3 +44,12 @@ Route::group(['prefix' => 'pengajar'], function() {
     Route::get('/pendapatan', 'UserController@earning')->name('pengajar.earning')->middleware('User');
 });
 
+Route::group(['prefix' => 'kelas'], function() {
+    Route::get('{id}', 'ClassController@detail')->name('kelas.detail');
+    Route::post('/join', 'ClassController@join')->name('kelas.join');
+});
+
+Route::group(['prefix' => 'invoice'], function() {
+    Route::get('/', 'InvoiceController@mine')->name('invoice')->middleware('User');;
+    Route::get('/{id}/bayar', 'InvoiceController@payPage')->name('invoice.bayar')->middleware('User');;
+});

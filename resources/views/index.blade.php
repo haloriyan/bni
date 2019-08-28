@@ -12,9 +12,9 @@
     <div class="bag bag-5">
         <h1>Welkam!</h1>
         <h2 class="mb-5">Ada tutorial khusus buat kamu di sebelah kanan</h2>
-        <form action="#">
+        <form action="{{ route('user.cariKelas') }}">
             <div class="bag bag-7">
-                <input type="text" class="box-2" placeholder="Atau cari sendiri tutorial favoritmu...">
+                <input type="text" class="box-2" name="term" placeholder="Atau cari sendiri tutorial favoritmu...">
             </div>
             <div class="bag bag-1">&nbsp;</div>
             <div class="bag bag-2">

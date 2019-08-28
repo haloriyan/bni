@@ -17,13 +17,15 @@ class UserController extends Controller
     public static function me() {
         return Auth::guard('user')->user();
     }
-    public function loginPage() {
-        return view('user.login');
+    public function loginPage(Request $req) {
+        $reto = $req->reto != "" ? $req->reto : "";
+        return view('user.login')->with(['reto' => $reto]);
     }
     public function registerPage() {
         return view('user.register');
     }
     public function login(Request $req) {
+        $reto = base64_decode($req->reto);
         $email = $req->email;
         $password = $req->password;
 
@@ -31,8 +33,11 @@ class UserController extends Controller
         if(!$login) {
             return redirect()->route('user.loginPage')->withErrors(['Email / Password salah!']);
         }
-
-        return redirect()->route('user.index');
+        if($reto == "") {
+            return redirect()->route('user.index');
+        }else {
+            return redirect($reto);
+        }
     }
     public function logout() {
         Auth::guard('user')->logout();
@@ -61,7 +66,13 @@ class UserController extends Controller
     }
     public function listKelas() {
         $myData = $this->me();
-        return view('kelas')->with(['myData' => $myData]);
+        $myClass = ClassCtrl::mine($myData->id);
+        return view('kelas')->with(['myData' => $myData, 'myClass' => $myClass]);
+    }
+    public function cariKelas(Request $req) {
+        $myData = $this->me();
+        $q = ClassCtrl::search($req->term);
+        return view('cariKelas')->with(['datas' => $q, 'myData' => $myData, 'term' => $req->term]);
     }
 
     // pengajar

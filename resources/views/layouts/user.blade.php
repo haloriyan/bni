@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/variable.css') }}">
     <link rel="stylesheet" href="{{ asset('css/index.css') }}">
+    <link rel="stylesheet" href="{{ asset('fw/fontawesome-all.min.css') }}">
     @yield('head.dependencies')
 </head>
 <body class="bg-primer">
@@ -24,11 +25,14 @@
                 <div class="menu-content rounded">
                     <a href="{{ route('user.listKelas') }}"><li>Kelas saya</li></a>
                     <a href="{{ route('pengajar.dashboard') }}"><li>Panel Pengajar</li></a>
+                    <a href="{{ route('invoice') }}"><li>Invoice</li></a>
                     <a href="{{ route('user.logout') }}"><li>Logout</li></a>
                 </div>
             </div>
         @else
-            <a href="{{ route('user.loginPage') }}"><li class="bg-oren rounded">Login</li></a>
+            <a href="{{ route('user.loginPage', 'reto='.base64_encode(url()->full())) }}">
+                <li class="bg-oren rounded">Login</li>
+            </a>
         @endauth
     </div>
 </div>

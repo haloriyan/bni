@@ -6,5 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Learn extends Model
 {
-    //
+    protected $table = 'learn';
+    protected $fillable = ['user_id','class_id','status'];
+
+    public function kelas() {
+        return $this->belongsTo('App\Kelas', 'class_id');
+    }
+
+    public function user() {
+        return $this->belongsTo('App\User', 'user_id');
+    }
 }
