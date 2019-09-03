@@ -1,6 +1,6 @@
 @extends('layouts.user')
 
-@section('title', 'Belajar Ngeweb ID | Belajar Ngeweb ID')
+@section('title', 'Kelas Saya | Belajar Ngeweb ID')
 @section('title.second', 'Kelas Saya')
 
 @section('head.dependencies')
@@ -29,21 +29,6 @@
 
 @section('content')
 <div class="container">
-    {{-- <div class="kelas bag lebar-25">
-        <div class="wrap">
-            <div class="bg-putih rounded pb-1">
-                <div class="header">
-                    <img src="{{ asset('storage/avatars/riyan.jpg') }}" class="authorsAvatar rounded-circle">
-                    belajarngewebid
-                </div>
-                <div class="cover" style="background: url({{ asset('storage/covers/cover.png') }})"></div>
-                <div class="wrap">
-                    <h4>Tutorial cara mendownload gambar di Instagram dengan mudah</h4>
-                    <button class="oren-alt lebar-100 tinggi-50 p-0">Mulai Belajar</button>
-                </div>
-            </div>
-        </div>
-    </div> --}}
     @if($myClass->count() == 0)
         <div class="rata-tengah">
             <h2>Tidak ada kelas</h2>
@@ -63,12 +48,12 @@
                 <div class="wrap">
                     <div class="bg-putih rounded pb-1">
                         <div class="header">
-                            <img src="{{ asset('storage/avatars/riyan.jpg') }}" class="authorsAvatar rounded-circle">
+                            <img src="{{ asset('storage/avatars/'.$item->kelas->users->photo) }}" class="authorsAvatar rounded-circle">
                             {{ $item->kelas->users->name }}
                         </div>
-                        <div class="cover" style="background: url({{ asset('storage/covers/cover.png') }})"></div>
+                        <div class="cover" style="background: url('{{ asset('storage/covers/'.$item->kelas->cover) }}')"></div>
                         <div class="wrap">
-                            <h4>{{ $item->title }}</h4>
+                            <h4>{{ $item->kelas->title }}</h4>
                             <button class="oren-alt lebar-100 tinggi-50 p-0">Mulai Belajar</button>
                         </div>
                     </div>

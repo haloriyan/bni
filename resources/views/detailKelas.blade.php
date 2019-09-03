@@ -28,9 +28,13 @@
             {{ $classData->description }}
         </p>
         @if (Auth::guard('user')->check())
-            <form action="{{ route('kelas.join') }}" method="POST">
-                {{ csrf_field() }}
-                <input type="hidden" name="classId" value="{{ $classData->id }}">
+            @php
+                $actionRoute = $isJoined == 1 ? "learn.start" : "kelas.join";
+                $actionMethod = $isJoined == 1 ? "GET" : "POST";
+                $csrfField = $isJoined == 1 ? "" : csrf_field();
+            @endphp
+            <form action="{{ route($actionRoute, $classData->id) }}" method="{{ $actionMethod }}">
+                {{ $csrfField }}
                 <button class="oren lebar-100">Mulai Belajar</button>
             </form>
         @else

@@ -46,10 +46,20 @@ Route::group(['prefix' => 'pengajar'], function() {
 
 Route::group(['prefix' => 'kelas'], function() {
     Route::get('{id}', 'ClassController@detail')->name('kelas.detail');
-    Route::post('/join', 'ClassController@join')->name('kelas.join');
+    Route::post('{id}/join', 'ClassController@join')->name('kelas.join');
 });
 
 Route::group(['prefix' => 'invoice'], function() {
     Route::get('/', 'InvoiceController@mine')->name('invoice')->middleware('User');;
     Route::get('/{id}/bayar', 'InvoiceController@payPage')->name('invoice.bayar')->middleware('User');;
 });
+
+Route::group(['prefix' => 'belajar'], function() {
+    Route::get('{classId}/{materialId?}', 'LearnController@index')->name('learn.start');
+});
+
+Route::get('/test', function() {
+    return ini_get('post_max_size');
+});
+
+Route::get('/stream/{videoPath}', 'LearnController@stream')->name('stream.video');

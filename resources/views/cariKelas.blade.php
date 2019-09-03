@@ -36,8 +36,8 @@
 
 @section('content')
 <div class="container mb-4">
-    <form action="#" class="pencarian">
-        <input type="text" class="box-2" value="{{ $term }}" placeholder="Cari tutorial...">
+    <form action="{{ route('user.cariKelas') }}" class="pencarian">
+        <input type="text" class="box-2" value="{{ $term }}" placeholder="Cari tutorial..." name="term">
         <button class="ml-1 oren rounded-circle"><i class="fas fa-search"></i></button>
     </form>
     @foreach ($datas as $item)

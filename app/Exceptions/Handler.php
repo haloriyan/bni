@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Validator;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
@@ -45,7 +46,7 @@ class Handler extends ExceptionHandler
      * @return \Illuminate\Http\Response
      */
     public function render($request, Exception $exception)
-    {
+    {   
         return parent::render($request, $exception);
     }
 }

@@ -8,6 +8,12 @@ use Illuminate\Http\Request;
 
 class MaterialController extends Controller
 {
+    public static function get($id) {
+        return Material::find($id);
+    }
+    public static function getFirst($classId) {
+        return Material::where('class_id', $classId)->orderBy('created_at', 'ASC')->first();
+    }
     public static function getMaterialClass($classId) {
         return Material::where('class_id', $classId)->orderBy('updated_at')->get();
     }
@@ -18,7 +24,7 @@ class MaterialController extends Controller
         ]);
 
         $video = $req->file('video');
-        $videoFileName = $video->getClientOriginalName();
+        $videoFileName = str_replace(" ", "", $video->getClientOriginalName());
 
         $material = Material::create([
             'class_id' => $classId,
@@ -26,7 +32,7 @@ class MaterialController extends Controller
             'video' => $videoFileName,
         ]);
 
-        $video->storeAs('videos/', $videoFileName);
+        $video->storeAs('public/videos/', $videoFileName);
 
         return redirect()->route('kelas.material', $classId);
     }
@@ -35,7 +41,7 @@ class MaterialController extends Controller
         $material = Material::find($id);
         $classId = $material->class_id;
 
-        $deleteFile = Storage::delete('videos/'.$material->video);
+        $deleteFile = Storage::delete('public/videos/'.$material->video);
         $material->delete();
 
         return redirect()->route('kelas.material', $classId);

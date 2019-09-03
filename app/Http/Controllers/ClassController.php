@@ -105,7 +105,10 @@ class ClassController extends Controller
         $materials = MateriCtrl::getMaterialClass($kelas->id);
 
         $isJoined = $this->isJoined($myData->id, $kelas->id);
-        $isPaid = InvCtrl::isPaid($myData->id, $kelas->id);
+        $isPaid = "";
+        if($isJoined) {
+            $isPaid = InvCtrl::isPaid($myData->id, $kelas->id);
+        }
 
         return view('detailKelas')->with([
             'classData' => $kelas,
@@ -115,7 +118,7 @@ class ClassController extends Controller
             'isPaid' => $isPaid,
         ]);
     }
-    public function join(Request $req) {
+    public function join($id, Request $req) {
         $classId = $req->classId;
         $myId = UserCtrl::me()->id;
 
