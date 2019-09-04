@@ -19,6 +19,7 @@ class CreateLearnTable extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->integer('class_id')->unsigned()->index();
             $table->foreign('class_id')->references('id')->on('class');
+            $table->integer('to_pay');
             $table->integer('status');
             $table->string('evidence')->nullable();
             $table->timestamps();

@@ -101,7 +101,7 @@ class ClassController extends Controller
     }
     public function detail($id) {
         $myData = UserCtrl::me();
-        $kelas = Kelas::find($id);
+        $kelas = Kelas::where('id', $id)->with('users')->first();
         $materials = MateriCtrl::getMaterialClass($kelas->id);
 
         $isJoined = $this->isJoined($myData->id, $kelas->id);
@@ -119,15 +119,18 @@ class ClassController extends Controller
         ]);
     }
     public function join($id, Request $req) {
-        $classId = $req->classId;
+        $classId = $id;
         $myId = UserCtrl::me()->id;
+        $classData = $this->info($classId);
+        $status = $classData->price > 0 ? 0 : 1;
 
         $joining = Learn::create([
             'user_id' => $myId,
             'class_id' => $classId,
-            'status' => 0,
+            'status' => $status,
+            'to_pay' => $classData->price,
         ]);
         
-        return redirect()->route('user.listKelas');
+        return redirect()->route('invoice');
     }
 }

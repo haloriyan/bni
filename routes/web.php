@@ -52,10 +52,11 @@ Route::group(['prefix' => 'kelas'], function() {
 Route::group(['prefix' => 'invoice'], function() {
     Route::get('/', 'InvoiceController@mine')->name('invoice')->middleware('User');;
     Route::get('/{id}/bayar', 'InvoiceController@payPage')->name('invoice.bayar')->middleware('User');;
+    Route::post('/{id}/bayar', 'InvoiceController@pay')->name('invoice.bayar.action')->middleware('User');;
 });
 
 Route::group(['prefix' => 'belajar'], function() {
-    Route::get('{classId}/{materialId?}', 'LearnController@index')->name('learn.start');
+    Route::get('{classId}/{materialId?}', 'LearnController@index')->name('learn.start')->middleware('User');
 });
 
 Route::get('/test', function() {

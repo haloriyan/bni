@@ -54,7 +54,9 @@
                         <div class="cover" style="background: url('{{ asset('storage/covers/'.$item->kelas->cover) }}')"></div>
                         <div class="wrap">
                             <h4>{{ $item->kelas->title }}</h4>
-                            <button class="oren-alt lebar-100 tinggi-50 p-0">Mulai Belajar</button>
+                            <a href="{{ route('learn.start', $item->kelas->id, 125) }}">
+                                <button class="oren-alt lebar-100 tinggi-50 p-0">Lihat Kelas</button>
+                            </a>
                         </div>
                     </div>
                 </div>

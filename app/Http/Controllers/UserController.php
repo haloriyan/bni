@@ -8,6 +8,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use \App\Http\Controllers\ClassController as ClassCtrl;
+use \App\Http\Controllers\LearnController as LearnCtrl;
 use \App\Http\Controllers\MaterialController as MaterialCtrl;
 
 class UserController extends Controller
@@ -104,5 +105,13 @@ class UserController extends Controller
     public function uploadMaterialPage($classId) {
         $classData = ClassCtrl::info($classId);
         return view('pengajar.kelas.uploadMaterial')->with(['classData' => $classData]);
+    }
+    public function classParticipant($classId) {
+        $classData = ClassCtrl::info($classId);
+        $learnerData = LearnCtrl::getLearner($classId);
+        return view('pengajar.kelas.participant')->with([
+            'classData' => $classData,
+            'participants' => $learnerData,
+        ]);
     }
 }

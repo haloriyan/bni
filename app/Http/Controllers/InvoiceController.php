@@ -21,7 +21,8 @@ class InvoiceController extends Controller
 
         $data = Learn::where([
             ['user_id', $myId],
-            ['status', 0]
+            ['status', 0],
+            ['to_pay', '>', 0]
         ])->with('kelas')->get();
 
         return view('user.invoice')->with([
@@ -29,16 +30,30 @@ class InvoiceController extends Controller
             'myData' => $myData,
         ]);
     }
+    public function validateImage($name) {
+        $a = explode(".", $name);
+        return $a[count($a) - 1];
+    }
     public function pay($learnId, Request $req) {
         $inv = Learn::find($learnId)->update(['status' => 1]);
         
+        $validateData = $this->validate($req, [
+            'evidence' => 'required|image'
+        ]);
+
         $evidence = $req->file('evidence');
-        $fileName = $evidence->getOriginalClientName();
+        $fileName = $evidence->getClientOriginalName();
         $evidence->storeAs('public/evidences/', $fileName);
 
         return redirect()->route('user.listKelas');
     }
     public function payPage($id) {
-        return $id;
+        $myData = UserCtrl::me();
+        $invoice = Learn::where('id', $id)->with('kelas')->first();
+
+        return view('user.pay')->with([
+            'myData' => $myData,
+            'invoice' => $invoice,
+        ]);
     }
 }
