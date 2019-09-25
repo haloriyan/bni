@@ -50,17 +50,24 @@ Route::group(['prefix' => 'kelas'], function() {
 });
 
 Route::group(['prefix' => 'invoice'], function() {
-    Route::get('/', 'InvoiceController@mine')->name('invoice')->middleware('User');;
-    Route::get('/{id}/bayar', 'InvoiceController@payPage')->name('invoice.bayar')->middleware('User');;
-    Route::post('/{id}/bayar', 'InvoiceController@pay')->name('invoice.bayar.action')->middleware('User');;
+    Route::get('/', 'InvoiceController@mine')->name('invoice')->middleware('User');
+    Route::get('/selesai-bayar', 'InvoiceController@done')->name('invoice.done')->middleware('User');
+    Route::get('/{id}/bayar', 'InvoiceController@payPage')->name('invoice.bayar')->middleware('User');
+    Route::post('/{id}/bayar', 'InvoiceController@pay')->name('invoice.bayar.action')->middleware('User');
 });
 
 Route::group(['prefix' => 'belajar'], function() {
     Route::get('{classId}/{materialId?}', 'LearnController@index')->name('learn.start')->middleware('User');
 });
 
-Route::get('/test', function() {
-    return ini_get('post_max_size');
+Route::group(['prefix' => 'admin'], function() {
+    Route::get('login', 'AdminController@loginPage')->name('admin.loginPage');
+    Route::post('login', 'AdminController@login')->name('admin.login');
+    Route::get('dashboard', 'AdminController@dashboard')->name('admin.dashboard')->middleware('Admin');
+    Route::get('invoice', 'AdminController@invoice')->name('admin.invoice')->middleware('Admin');
+
+    Route::get('invoice/{id}/accept', 'InvoiceController@accept')->name('admin.invoice.accept')->middleware('Admin');
+    Route::get('invoice/{id}/decline', 'InvoiceController@decline')->name('admin.invoice.decline')->middleware('Admin');
 });
 
 Route::get('/stream/{videoPath}', 'LearnController@stream')->name('stream.video');

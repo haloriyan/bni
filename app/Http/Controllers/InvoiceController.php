@@ -35,8 +35,6 @@ class InvoiceController extends Controller
         return $a[count($a) - 1];
     }
     public function pay($learnId, Request $req) {
-        $inv = Learn::find($learnId)->update(['status' => 1]);
-        
         $validateData = $this->validate($req, [
             'evidence' => 'required|image'
         ]);
@@ -45,7 +43,12 @@ class InvoiceController extends Controller
         $fileName = $evidence->getClientOriginalName();
         $evidence->storeAs('public/evidences/', $fileName);
 
-        return redirect()->route('user.listKelas');
+        $inv = Learn::where('id', $learnId)->first();
+        $inv->status = 2;
+        $inv->evidence = $fileName;
+        $inv->save();
+
+        return redirect()->route('invoice.done');
     }
     public function payPage($id) {
         $myData = UserCtrl::me();
@@ -55,5 +58,24 @@ class InvoiceController extends Controller
             'myData' => $myData,
             'invoice' => $invoice,
         ]);
+    }
+    public function done() {
+        $myData = UserCtrl::me();
+        return view('user.donePay')->with(['myData' => $myData]);
+    }
+    public function accept($id) {
+        $inv = Learn::find($id)->update([['status', 1]]);
+        return redirect()->route('admin.invoice');
+    }
+    public function decline($id) {
+        $inv = Learn::find($id);
+        $inv->status = 0;
+        $inv->evidence = '';
+
+        $deleteFile = Storage::delete('public/videos/'.$inv->evidence);
+
+        $inv->save();
+
+        return redirect()->route('admin.invoice');
     }
 }

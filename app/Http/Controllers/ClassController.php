@@ -104,9 +104,14 @@ class ClassController extends Controller
         $kelas = Kelas::where('id', $id)->with('users')->first();
         $materials = MateriCtrl::getMaterialClass($kelas->id);
 
-        $isJoined = $this->isJoined($myData->id, $kelas->id);
+        if($myData == "") {
+            // belum login
+            $isJoined = 0;
+        }else {
+            $isJoined = $this->isJoined($myData->id, $kelas->id);
+        }
         $isPaid = "";
-        if($isJoined) {
+        if($isJoined != 0) {
             $isPaid = InvCtrl::isPaid($myData->id, $kelas->id);
         }
 
@@ -120,7 +125,8 @@ class ClassController extends Controller
     }
     public function join($id, Request $req) {
         $classId = $id;
-        $myId = UserCtrl::me()->id;
+        $myData = UserCtrl::me();
+        $myId = $myData->id;
         $classData = $this->info($classId);
         $status = $classData->price > 0 ? 0 : 1;
 

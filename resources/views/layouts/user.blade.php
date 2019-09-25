@@ -24,7 +24,9 @@
                 <img src="{{ asset('/storage/avatars/' . $myData->photo) }}" class="avatar rounded-circle">
                 <div class="menu-content rounded">
                     <a href="{{ route('user.listKelas') }}"><li>Kelas saya</li></a>
-                    <a href="{{ route('pengajar.dashboard') }}"><li>Panel Pengajar</li></a>
+                    @if($myData->is_mentor == 1)
+                        <a href="{{ route('pengajar.dashboard') }}"><li>Panel Pengajar</li></a>
+                    @endif
                     <a href="{{ route('invoice') }}"><li>Invoice</li></a>
                     <a href="{{ route('user.logout') }}"><li>Logout</li></a>
                 </div>

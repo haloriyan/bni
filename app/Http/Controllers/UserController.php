@@ -18,6 +18,9 @@ class UserController extends Controller
     public static function me() {
         return Auth::guard('user')->user();
     }
+    public static function update($id, $column, $value) {
+        return User::find($id)->update($column, $value);
+    }
     public function loginPage(Request $req) {
         $reto = $req->reto != "" ? $req->reto : "";
         return view('user.login')->with(['reto' => $reto]);
@@ -51,6 +54,7 @@ class UserController extends Controller
             'password' => bcrypt($req->password),
             'photo' => 'default.jpg',
             'status' => 1,
+            'is_mentor' => 0,
         ]);
 
         $showName = explode(" ", $req->name)[0];

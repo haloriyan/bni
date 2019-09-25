@@ -28,7 +28,7 @@
         <div class="kelas bag">
             <div class="wrap">
                 <div class="bg-putih rounded pb-1 bayangan-5">
-                    <div class="cover" style="background: url('{{ asset('storage/app/covers/'.$item->cover) }}')"></div>
+                    <div class="cover" style="background: url('{{ asset('storage/covers/'.$item->cover) }}')"></div>
                     <div class="wrap">
                         <h4>{{ $item->title }}</h4>
                         <a href="{{ route('kelas.material', $item->id) }}">
