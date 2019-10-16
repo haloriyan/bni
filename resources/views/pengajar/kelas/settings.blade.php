@@ -26,12 +26,22 @@
                 <input type="text" class="box mt-1" name="title" placeholder="Misal : Membuat API dengan Laravel" value="{{ $classData->title }}">
                 <div class="mt-2">Deskripsi :</div>
                 <textarea name="description" class="box mt-1" placeholder="Ceritakan apa yang akan dipelajari di kelas ini">{{ $classData->description }}</textarea>
-                <div class="mt-2">Harga :</div>
-                <input type="hidden" name="price" id="price" value="0" value="{{ $classData->price }}">
-                <input type="text" class="box mt-1" id="priceDisplay" placeholder="Kosongkan saja jika kelas ini gratis">
                 <div class="mt-2">Ganti Cover :</div>
                 <input type="file" name="cover" class="box mt-1">
                 <button class="oren mt-3">Buat!</button>
+            </form>
+        </div>
+    </div>
+    <div class="content bg-putih rounded mt-4 mb-4 bayangan-5 p-1">
+        <div class="wrap">
+            <form action="{{ route('kelas.delete', $classData->id) }}" method="POST" id="deleteClass">
+                <input type="hidden" name="_method" value="DELETE">
+                {{ csrf_field() }}
+                <h2>Hapus kelas</h2>
+                <p class="teks-transparan">Tindakan ini akan menghapus kelas beserta seluruh video materi yang ada dan tidak dapat dibatalkan</p>
+                <input type="hidden" id="classNameToDelete" value="{{ $classData->title }}">
+                <input type="text" class="box mb-2" oninput="tryDelete(this.value)" placeholder="Ketik nama kelas untuk melanjutkan">
+                <button class="tbl bg-merah-transparan lebar-100" id="btnDelete" type="button"><i class="fas fa-trash"></i> &nbsp; Hapus</button>
             </form>
         </div>
     </div>
@@ -40,40 +50,24 @@
 
 @section('javascript')
 <script>
-function formatRupiah(angka, prefix){
-    angka = angka.toString()
-	var number_string = angka.replace(/[^,\d]/g, '').toString(),
-	split   		= number_string.split(','),
-	sisa     		= split[0].length % 3,
-	rupiah     		= split[0].substr(0, sisa),
-	ribuan     		= split[0].substr(sisa).match(/\d{3}/gi);
+    let namaKelas = $("#classNameToDelete").isi()[0]
+    let allowToDelete = 0
 
-	// tambahkan titik jika yang di input sudah menjadi angka ribuan
-	if(ribuan){
-		separator = sisa ? '.' : '';
-		rupiah += separator + ribuan.join('.');
-	}
-	rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-	return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
-}
-function toAngka(angka) {
-	return parseInt(angka.replace(/,.*|[^0-9]/g, ''), 10);
-}
+    $("#deleteClass")[0].onsubmit = (e) => {
+        if(allowToDelete == 0) {
+            e.preventDefault()
+            return false
+        }
+    })
 
-function displayPrice() {
-    let value = $("#price").isi().toString()
-    let angka = formatRupiah(value, 'Rp. ')
-    this.value = angka
-    $("#priceDisplay").isi(this.value)
-}
-displayPrice()
-
-$("#priceDisplay").di('ketik', function() {
-    let value = this.value
-    let angka = formatRupiah(value, 'Rp. ')
-    this.value = angka
-    $("#price").isi(toAngka(value))
-})
-
+    function tryDelete(typed) {
+        if(typed.toLowerCase() == namaKelas.toLowerCase()) {
+            $("#btnDelete").atribut('type', 'submit')
+            $("#btnDelete").atribut('class', 'tbl merah lebar-100')
+        }else {
+            $("#btnDelete").atribut('type', 'button')
+            $("#btnDelete").atribut('class', 'tbl bg-merah-transparan lebar-100')
+        }
+    }
 </script>
-@endsection 
+@endsection

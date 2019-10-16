@@ -47,6 +47,7 @@ Route::group(['prefix' => 'pengajar'], function() {
 Route::group(['prefix' => 'kelas'], function() {
     Route::get('{id}', 'ClassController@detail')->name('kelas.detail');
     Route::post('{id}/join', 'ClassController@join')->name('kelas.join');
+    Route::delete('{id}/delete', 'ClassController@delete')->name('kelas.delete');
 });
 
 Route::group(['prefix' => 'invoice'], function() {
@@ -70,4 +71,4 @@ Route::group(['prefix' => 'admin'], function() {
     Route::get('invoice/{id}/decline', 'InvoiceController@decline')->name('admin.invoice.decline')->middleware('Admin');
 });
 
-Route::get('/stream/{videoPath}', 'LearnController@stream')->name('stream.video');
+Route::get('/stream/{classId}/{videoPath}', 'LearnController@stream')->name('stream.video');

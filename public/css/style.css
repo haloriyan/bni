@@ -92,12 +92,14 @@ select.box:focus {
 .bg-biru { background-color: #2196f3;color: #fff; }
 .bg-biru-transparan { background-color: #3498db30;color: #2980b9; }
 .bg-oren { background-color: #f15b2d;;color: #fff; }
-.bg-oren-transparan { background-color: #d8491d30;color: #f15b2d;; }
+.bg-oren-transparan { background-color: #d8491d30;color: #f15b2d; }
+.bg-primer { background-color: #095e6a;color: #fff; }
 
 .teks-merah { color: #e74c3c; }
 .teks-hijau { color: #2ecc71; }
 .teks-biru { color: #3498db; }
 .teks-oren { color: #f15b2d;; }
+.teks-primer { color: #095e6a; }
 
 .bayangan-5 { box-shadow: 1px 1px 5px 1px #ddd; }
 .bayangan-1 { box-shadow: 1px 1px 1px 1px #ddd; }
@@ -124,6 +126,15 @@ button.biru:hover { background-color: #2980b9; }
 button.biru:focus {
     outline: none;
     box-shadow: 1px 1px 5px 5px #2196f380;
+}
+button.primer {
+    background-color: #095e6a;
+    color: #fff;
+}
+button.primer:hover { background-color: #085661; }
+button.primer:focus {
+    outline: none;
+    box-shadow: 1px 1px 5px 5px #095e6a80;
 }
 button.kuning {
     background-color: #fcd840;

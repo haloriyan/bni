@@ -2,6 +2,8 @@
 
 @section('title', 'Kelas | Belajar Ngeweb ID')
 
+@inject('ClassCtrl', 'App\Http\Controllers\ClassController')
+
 @section('head.dependencies')
 <style>
     .kelas { width: 33.3%; }
@@ -28,7 +30,7 @@
         <div class="kelas bag">
             <div class="wrap">
                 <div class="bg-putih rounded pb-1 bayangan-5">
-                    <div class="cover" style="background: url('{{ asset('storage/covers/'.$item->cover) }}')"></div>
+                    <div class="cover" style="background: url('{{ asset('storage/kelas/'.$ClassCtrl::slug($item->title).'/'.$item->cover) }}')"></div>
                     <div class="wrap">
                         <h4>{{ $item->title }}</h4>
                         <a href="{{ route('kelas.material', $item->id) }}">

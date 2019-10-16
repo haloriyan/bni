@@ -3,6 +3,8 @@
 @section('title', 'Belajar Ngeweb ID | Belajar Ngeweb ID')
 @section('title.second', 'Kelas Saya')
 
+@inject('ClassCtrl', 'App\Http\Controllers\ClassController')
+
 @section('head.dependencies')
 <style>
     .container { top: 120px; }
@@ -48,7 +50,7 @@
                     <img src="{{ asset('storage/avatars/'. $item->users->photo) }}" class="authorsAvatar rounded-circle">
                     {{ $item->users->name }}
                 </div>
-                <div class="cover" style="background: url('{{ asset('storage/covers/'.$item->cover) }}')"></div>
+                <div class="cover" style="background: url('{{ asset('storage/kelas/'.$ClassCtrl::slug($item->title).'/'.$item->cover) }}')"></div>
                 <div class="wrap">
                     <h4>{{ $item->title }}</h4>
                     <a href="{{ route('kelas.detail', $item->id) }}">

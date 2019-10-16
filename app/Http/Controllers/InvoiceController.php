@@ -23,7 +23,9 @@ class InvoiceController extends Controller
             ['user_id', $myId],
             ['status', 0],
             ['to_pay', '>', 0]
-        ])->with('kelas')->get();
+        ])->with('material')->get();
+
+        // return dd($data);
 
         return view('user.invoice')->with([
             'inv' => $data,

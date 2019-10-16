@@ -20,6 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->string('photo');
             $table->string('payment')->nullable();
+            $table->text('class_list');
             $table->tinyInteger('is_mentor')->nullable();
             $table->integer('status');
             $table->timestamps();

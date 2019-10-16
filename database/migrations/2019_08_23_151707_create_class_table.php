@@ -20,7 +20,6 @@ class CreateClassTable extends Migration
             $table->string('title');
             $table->text('description');
             $table->string('cover');
-            $table->integer('price');
             $table->string('tag');
             $table->timestamps();
         });

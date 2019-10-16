@@ -18,7 +18,7 @@ class CreateMaterialsTable extends Migration
             $table->integer('class_id')->unsigned()->index();
             $table->foreign('class_id')->references('id')->on('class');
             $table->string('title');
-            $table->text('description');
+            $table->integer('price');
             $table->string('video');
             $table->timestamps();
         });

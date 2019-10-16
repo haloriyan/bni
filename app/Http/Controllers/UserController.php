@@ -19,7 +19,7 @@ class UserController extends Controller
         return Auth::guard('user')->user();
     }
     public static function update($id, $column, $value) {
-        return User::find($id)->update($column, $value);
+        return User::find($id)->update([$column => $value]);
     }
     public function loginPage(Request $req) {
         $reto = $req->reto != "" ? $req->reto : "";
@@ -55,6 +55,7 @@ class UserController extends Controller
             'photo' => 'default.jpg',
             'status' => 1,
             'is_mentor' => 0,
+            'class_list' => '[]',
         ]);
 
         $showName = explode(" ", $req->name)[0];

@@ -10,7 +10,7 @@
 @endphp
 
 @section('content')
-<div class="container">
+<div class="container mb-5">
     <div class="rata-tengah">
         <div class="rata-kiri d-inline-block lebar-60">
             @if ($inv->count() == 0)
@@ -21,20 +21,22 @@
                     </a>
                 </div>
             @else
-                <h3>List kelas yang belum dibayar</h3>
+                <h2>List kelas yang belum dibayar</h2>
                 @foreach ($inv as $item)
-                    <div class="bg-putih rounded mb-2 p-2">
-                        <div class="bag bag-7 d-inline-block">
-                            <p>{{ $item->kelas->title }}</p>
-                            <p class="teks-transparan">{{ toIdr($item->kelas->price) }}</p>
-                        </div>
-                        <div class="bag bag-3 d-inline-block rata-kanan">
-                            <a href="{{ route('invoice.bayar', $item->id) }}">
-                                <button class="oren mt-3">Bayar</button>
-                            </a>
+                    <div class="bg-putih rounded mb-2 p-2 pb-1">
+                        <div class="bag bag-10 d-inline-block">
+                            <p>{{ $item->material->title }}</p>
+                            <p class="teks-transparan">{{ toIdr($item->to_pay) }}</p>
                         </div>
                     </div>
                 @endforeach
+                @php
+                    $totalToPay = $inv->sum('to_pay');
+                @endphp
+                <h3>Total : {{ toIdr($totalToPay) }}</h3>
+                <a href="{{ route('invoice.bayar', $item->id) }}">
+                    <button class="oren mt-3">Bayar</button>
+                </a>
             @endif
         </div>
     </div>

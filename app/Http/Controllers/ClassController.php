@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Storage;
 use App\Kelas;
 use App\Learn;
+use App\Material;
 use Illuminate\Http\Request;
 use \App\Http\Controllers\UserController as UserCtrl;
 use \App\Http\Controllers\InvoiceController as InvCtrl;
@@ -11,6 +13,16 @@ use \App\Http\Controllers\MaterialController as MateriCtrl;
 
 class ClassController extends Controller
 {
+    public static function slug($title) {
+        $cek = strpos($title, "-");
+		if($cek > 0) {
+			$res = implode(" ", explode("-", $title));
+		}else {
+			$res = implode("-", explode(" ", $title));
+			$res = strtolower($res);
+		}
+		return $res;
+    }
     // user
     public static function mine($myId) {
         return Learn::where([
@@ -41,12 +53,16 @@ class ClassController extends Controller
             'user_id' => $myData->id,
             'title' => $req->title,
             'description' => $req->description,
-            'price' => $req->price,
-            'cover' => $coverFileName,
+            'cover' => $coverFileNamestatic ,
             'tag' => ''
         ]);
 
-        $cover->storeAs('public/covers/', $coverFileName);
+        $titleSlug = $this->slug($req->title);
+
+        // create directory for storing material
+        $createDir = Storage::disk('kelas')->makeDirectory($titleSlug);
+
+        $cover->storeAs('public/kelas/'.$titleSlug.'/', $coverFileName);
 
         return redirect()->route('pengajar.kelas');
     }
@@ -62,12 +78,12 @@ class ClassController extends Controller
         $kelas = Kelas::find($id);
         $kelas->title = $req->title;
         $kelas->description = $req->description;
-        $kelas->price = $req->price;
         if($cover != "") {
             $coverFileName = $cover->getClientOriginalName();
             $kelas->cover = $coverFileName;
 
-            $cover->storeAs('public/covers/', $coverFileName);
+            $titleSlug = $this->slug($req->title);
+            $cover->storeAs('public/kelas/'.$titleSlug.'/', $coverFileName);
         }
         $kelas->save();
 
@@ -101,8 +117,14 @@ class ClassController extends Controller
     }
     public function detail($id) {
         $myData = UserCtrl::me();
+        $myClasses = explode(",", $myData->class_list);
+
         $kelas = Kelas::where('id', $id)->with('users')->first();
-        $materials = MateriCtrl::getMaterialClass($kelas->id);
+        if(in_array($id, $myClasses)) {
+            $materials = MateriCtrl::getAvailableToBuy($myData, $id);
+        }else {
+            $materials = MateriCtrl::getMaterialClass($id);
+        }
 
         if($myData == "") {
             // belum login
@@ -123,7 +145,51 @@ class ClassController extends Controller
             'isPaid' => $isPaid,
         ]);
     }
+    public function isHaveClass($myClass, $classId) {
+        $myClass = explode(",", $myClass);
+
+        return (in_array($classId, $myClass)) ? true : false;
+    }
+    public function updateMyClass($params) {
+        $myData = $params['userData'];
+        $classId = $params['classId'];
+
+        $userClasses = $myData->class_list;
+        if($userClasses == "") {
+            $updateMyClass = UserCtrl::update($myData->id, "class_list", $classId);
+        }else {
+            if(!$this->isHaveClass($userClasses, $classId)) {
+                $myClass = $userClasses.",".$classId;
+                $updateMyClass = UserCtrl::update($myData->id, "class_list", $myClass);
+            }
+        }
+    }
     public function join($id, Request $req) {
+        $classId = $id;
+        $myData = UserCtrl::me();
+        $selectedMaterial = explode(",", $req->selectedMaterial);
+
+        $this->updateMyClass([
+            'userData' => $myData,
+            'classId' => $classId,
+        ]);
+
+        foreach($selectedMaterial as $key => $value) {
+            $material = Material::find($value);
+            $status = $material->price > 0 ? 0 : 1;
+
+            $join = Learn::create([
+                'user_id' => $myData->id,
+                'material_id' => $value,
+                'class_id' => $classId,
+                'to_pay' => $material->price,
+                'status' => $status,
+            ]);
+        }
+
+        return redirect()->route('invoice');
+    }
+    public function joinLama($id, Request $req) {
         $classId = $id;
         $myData = UserCtrl::me();
         $myId = $myData->id;
@@ -134,7 +200,6 @@ class ClassController extends Controller
             'user_id' => $myId,
             'class_id' => $classId,
             'status' => $status,
-            'to_pay' => $classData->price,
         ]);
         
         return redirect()->route('invoice');

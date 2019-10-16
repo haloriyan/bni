@@ -3,6 +3,14 @@
 @section('title', $classData->title.' | Belajar Ngeweb ID')
 @section('title.second', $classData->title)
 
+@inject('ClassCtrl', 'App\Http\Controllers\ClassController')
+
+@php
+    function toIdr($angka) {
+        return 'Rp. '.strrev(implode('.',str_split(strrev(strval($angka)),3)));
+    }
+@endphp
+
 @section('head.dependencies')
 <style>
     body { background-color: #ecf0f1 !important; }
@@ -51,7 +59,7 @@
 
 @section('content')
 <div class="konten">
-    <div class="covers" style="background: url('{{ asset('storage/covers/'.$classData->cover) }}')">&nbsp;</div>
+    <div class="covers" style="background: url('{{ asset('storage/kelas/'.$ClassCtrl::slug($classData->title).'/'.$classData->cover) }}')">&nbsp;</div>
     <div class="tutupCover"></div>
 </div>
 
@@ -64,7 +72,7 @@
             <h2 class="mt-1">{{ $classData->title }}</h2>
             <p class="teks-transparan mb-0">{{ $classData->users->name }}</p>
         </div>
-        <div class="bag bag-2 rata-tengah">
+        <div class="bag bag-2 rata-kanan">
             @if (Auth::guard('user')->check())
                 @php
                     $actionRoute = $isJoined == 1 ? "learn.start" : "kelas.join";
@@ -72,10 +80,10 @@
                     $csrfField = $isJoined == 1 ? "" : csrf_field();
                     $textButton = $isJoined == 1 ? "Mulai Belajar" : "Gabung Kelas";
                 @endphp
-                <form action="{{ route($actionRoute, $classData->id) }}" method="{{ $actionMethod }}">
+                {{-- <form action="{{ route($actionRoute, $classData->id) }}" method="{{ $actionMethod }}">
                     {{ $csrfField }}
                     <button class="mt-2 oren lebar-100">{{ $textButton }}</button>
-                </form>
+                </form> --}}
             @else
                 <div class="rata-tengah">
                     <p>Login dulu untuk mulai belajar</p>
@@ -92,66 +100,57 @@
         </div>
         <div class="bag bag-5">
             <div class="wrap mt-0">
-                <h3 class="teks-gelap">List Materi</h3>
+                <h2 class="teks-gelap mt-0">List Materi</h2>
+                <p class="teks-transparan">Klik untuk pilih materi yang ingin kamu pelajari</p>
                 @foreach ($materials as $item)
-                    <div class="bg-putih rounded bayangan-5 p-3 mb-2">
+                    <div class="bg-putih rounded pointer bayangan-5 p-3 mb-2" onclick="selectMaterial(this)" material_id="{{ $item->id }}">
                         {{ $item->title }}
+                        <br />
+                        <div class="mt-1 teks-transparan">{{ toIdr($item->price) }}</div>
                     </div>
                 @endforeach
+                <form id="formOrder" action="{{ route('kelas.join', $classData->id) }}" method="POST">
+                    {{ csrf_field() }}
+                    <input type="hidden" id="selectedMaterial" name="selectedMaterial">
+                    <button type="button" id="btnBuy" class="lebar-100">Beli Materi</button>
+                </form>
+                <a href="{{ route('learn.start', [$classData->id, 1]) }}">
+                    <button class="lebar-100 mt-2 primer">Lihat materi yang kamu punya</button>
+                </a>
             </div>
-        </div>
-    </div>
-</div>
-
-<div class="containers d-none teks-gelap">
-    <div class="bag bag-5">
-        
-    </div>
-    <div class="bag bag-1"></div>
-    <div class="bag bag-4">
-        <h2 class="mt-1">{{ $classData->title }}</h2>
-        <p class="teks-transparan">
-            {{ $classData->description }}
-        </p>
-        @if (Auth::guard('user')->check())
-            @php
-                $actionRoute = $isJoined == 1 ? "learn.start" : "kelas.join";
-                $actionMethod = $isJoined == 1 ? "GET" : "POST";
-                $csrfField = $isJoined == 1 ? "" : csrf_field();
-            @endphp
-            <form action="{{ route($actionRoute, $classData->id) }}" method="{{ $actionMethod }}">
-                {{ $csrfField }}
-                <button class="oren lebar-100">Mulai Belajar</button>
-            </form>
-        @else
-            <div class="rata-tengah">
-                <p>Login dulu untuk mulai belajar</p>
-            </div>
-        @endif
-        <div class="mt-4">
-            <h2>Kelas oleh :</h2>
-            <div class="bag bag-2 rata-tengah">
-                <img src="{{ asset('storage/avatars/'.$classData->users->photo) }}" class="d-inline-block rounded-circle profil">
-            </div>
-            <div class="bag bag-8">
-                <h3 class="d-inline-block">{{ $classData->users->name }}</h3>
-            </div>
-        </div>
-    </div>
-    <div class="bag bag-10 rata-tengah">
-        <div class="bag bag-8 d-inline-block rata-kiri">
-            <h3>List Materi</h3>
-            @foreach ($materials as $item)
-                <div class="bg-putih rounded bayangan-5 p-3 mb-2">
-                    {{ $item->title }}
-                </div>
-            @endforeach
         </div>
     </div>
 </div>
 
 <script src="{{ asset('js/embo.js') }}"></script>
 <script>
+    let selectedMaterial = []
+    function selectMaterial(that) {
+        let selectedMaterialId = that.getAttribute('material_id')
+        if(!inArray(selectedMaterialId, selectedMaterial)) {
+            selectedMaterial.push(selectedMaterialId)
+            that.style.border = '3px solid #f15b2d'
+        }else {
+            let i = 0
+            selectedMaterial.forEach(res => {
+                let iPP = i++
+                if(res == selectedMaterialId) {
+                    selectedMaterial.splice(iPP, 1)
+                }
+            })
+            that.style.border = 'none'
+        }
+
+        if(selectedMaterial.length == 0) {
+            $("#btnBuy").atribut("class", "lebar-100")
+            $("#btnBuy").atribut("type", "button")
+        }else {
+            $("#btnBuy").atribut("type", "submit")
+            $("#btnBuy").atribut("class", "oren lebar-100")
+        }
+
+        $("#selectedMaterial").isi(selectedMaterial)
+    }
     window.onscroll = (e) => {
         scrollHandler(e)
     };

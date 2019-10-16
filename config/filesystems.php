@@ -55,6 +55,13 @@ return [
             'visibility' => 'public',
         ],
 
+        'kelas' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/kelas'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+        ],
+
         'material' => [
             'driver' => 'local',
             'root' => storage_path('app/public/videos'),
